@@ -48,6 +48,10 @@ func (b definitionBuilder) addModel(st reflect.Type, nameOverride string) *spec.
 	if b.isPrimitiveType(modelName) {
 		return nil
 	}
+	// no models needed for invalid types
+	if b.isInvalidType(modelName) {
+		return nil
+	}
 	// golang encoding/json packages says array and slice values encode as
 	// JSON arrays, except that []byte encodes as a base64-encoded string.
 	// If we see a []byte here, treat it at as a primitive type (string)
@@ -415,6 +419,13 @@ func keyFrom(st reflect.Type, cfg Config) string {
 		key = strings.Replace(key, "[]", "||", -1)
 	}
 	return key
+}
+
+func (b definitionBuilder) isInvalidType(modelName string) bool {
+	if len(modelName) == 0 {
+		return false
+	}
+	return strings.Contains(modelName, "interface")
 }
 
 // see also https://golang.org/ref/spec#Numeric_types
