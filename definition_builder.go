@@ -1,7 +1,6 @@
 package restfulspec
 
 import (
-	"encoding/json"
 	"reflect"
 	"strings"
 
