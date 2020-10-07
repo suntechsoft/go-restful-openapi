@@ -1,7 +1,6 @@
 package restfulspec
 
 import (
-	"encoding/json"
 	"reflect"
 	"strings"
 
@@ -160,19 +159,6 @@ func (b definitionBuilder) buildProperty(field reflect.StructField, model *spec.
 		return jsonName, modelDescription, prop
 	}
 	fieldType := field.Type
-
-	// check if type is doing its own marshalling
-	marshalerType := reflect.TypeOf((*json.Marshaler)(nil)).Elem()
-	if fieldType.Implements(marshalerType) {
-		var pType = "string"
-		if prop.Type == nil {
-			prop.Type = []string{pType}
-		}
-		if prop.Format == "" {
-			prop.Format = b.jsonSchemaFormat(keyFrom(fieldType, b.Config))
-		}
-		return jsonName, modelDescription, prop
-	}
 
 	// check if annotation says it is a string
 	if jsonTag := field.Tag.Get("json"); jsonTag != "" {
